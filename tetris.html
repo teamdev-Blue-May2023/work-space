@@ -1,22 +1,25 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="UTF-8">
   <title>テトリス</title>
   <style>
-      body {
-        background: #ddf5ff;
-      }
-      #container {
-        margin: 0 auto;
-      }
-    </style>
+    body {
+      background: #ddf5ff;
+    }
+
+    #container {
+      margin: 0 auto;
+    }
+  </style>
 </head>
+
 <body onload="init()">
-    <div id="container">
-      <canvas id="cvs"></canvas>
-    </div>
-    <script>
+  <div id="container">
+    <canvas id="cvs"></canvas>
+  </div>
+  <script>
     //ブロック1マスの大きさ
     const blockSize = 30;
     //ボードサイズ
@@ -25,7 +28,7 @@
     //キャンバスの取得
     const cvs = document.getElementById("cvs");
     //2dコンテキストを取得
-    const ctx=cvs.getContext("2d");
+    const ctx = cvs.getContext("2d");
     //キャンバスサイズ
     const canvasW = blockSize * boardCol;
     const canvasH = blockSize * boardRow;
@@ -34,19 +37,85 @@
     //コンテナの設定
     const container = document.getElementById("container");
     container.style.width = canvasW + 'px';
-    
+
+    //テトリミノの追加
+    const tetTypes = [
+      [], //配列のインデックス0は空としておく。
+      [
+        [0, 0, 0, 1],
+        [0, 0, 1, 0],
+        [0, 1, 0, 0],
+        [1, 0, 0, 0],
+      ],
+      [
+        [0, 0, 0, 0],
+        [0, 0, 1, 1],
+        [0, 0, 1, 1],
+        [0, 0, 0, 0],
+      ],
+      [
+        [0, 0, 0, 0],
+        [0, 0, 1, 0],
+        [0, 1, 1, 1],
+        [0, 0, 0, 0],
+      ],
+      [
+        [0, 0, 0, 0],
+        [0, 1, 1, 0],
+        [0, 0, 1, 1],
+        [0, 0, 0, 0],
+      ],
+      [
+        [0, 0, 0, 0],
+        [0, 0, 1, 1],
+        [0, 1, 1, 0],
+        [0, 0, 0, 0],
+      ],
+      [
+        [0, 0, 0, 0],
+        [1, 1, 1, 1],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+      ],
+      [
+        [0, 0, 0, 0],
+        [0, 1, 1, 1],
+        [0, 0, 0, 1],
+        [0, 0, 0, 0],
+      ],
+      [
+        [0, 0, 0, 0],
+        [0, 0, 0, 1],
+        [0, 1, 1, 1],
+        [0, 0, 0, 0],
+      ],
+    ];
+
+    //テトリミノの配列に対する色設定
+    const Colors = [
+        '',
+        '#faebd7',
+        '#6495ed',
+        '#00ff7f',
+        '#cd853f',
+        '#ff00ff',
+        '#4b0082',
+        '#f0f8ff',
+        '#808000',
+      ];
+
     //描画処理
-    const draw=()=>{
+    const draw = () => {
       //塗りに黒を設定
       ctx.fillStyle = '#000';
       //キャンバスを塗りつぶす
       ctx.fillRect(0, 0, canvasW, canvasH);
     }
     //初期化処理
-    const init=()=>{
+    const init = () => {
       draw();
     }
-    </script> 
+  </script>
 </body>
-</html>
 
+</html>
