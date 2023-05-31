@@ -6,7 +6,7 @@
   <title>テトリス</title>
   <style>
     body {
-      background: #ddf5ff;
+      background-image: url(https://sozaino.site/wp-content/uploads/2021/11/gameneon03.jpg);
     }
 
     #container {
@@ -113,6 +113,9 @@
     //ボード本体
     const board = [];
 
+    let offsetX = 0;
+    let offsetY = 0;
+
     //描画処理
     const draw = () => {
       //塗りに黒を設定
@@ -155,6 +158,15 @@
 
     document.onkeydown = (e) => {
       switch (e.keyCode) {
+        case 37: //左
+            if (canMove(-1, 0)) offsetX--;
+            break;
+          case 39: //右
+            if (canMove(1, 0)) offsetX++;
+            break;
+          case 40: //下
+            if (canMove(0, 1)) offsetY++;
+            break;
         case 32: //space
           let newTet = createRotateTet();
           tet = newTet;
@@ -164,8 +176,8 @@
 
     // ブロックの描画
     const drawBlock = (x, y, tet_idx) => {
-      let px = x * blockSize;
-      let py = y * blockSize;
+      let px = (offsetX + x) * blockSize;
+      let py = (offsetY + y) * blockSize;
       //塗りを設定
       ctx.fillStyle = tetColors[tet_idx];
       ctx.fillRect(px, py, blockSize, blockSize);
@@ -174,6 +186,34 @@
       //線を描画
       ctx.strokeRect(px, py, blockSize, blockSize);
     };
+
+    //移動の制限
+    const canMove = (dx, dy) => {
+        for (let y = 0; y < tetSize; y++) {
+          for (let x = 0; x < tetSize; x++) {
+            //その場所にブロックがあれば
+            if (tet[y][x]) {
+              //ボード座標に変換
+              let nx = offsetX + x + dx;
+              let ny = offsetY + y + dy;
+              if (
+                //調査する座標がボード外だったらできない
+                ny < 0 ||
+                nx < 0 ||
+                ny >= boardRow ||
+                nx >= boardCol ||
+                //移動したいボード上の場所にすでに存在してたらできない
+                board[ny][nx]
+              ) {
+                //移動できない
+                return false;
+              }
+            }
+          }
+        }
+        //移動できる
+        return true;
+      };
 
     //初期化処理
     const init = () => {
