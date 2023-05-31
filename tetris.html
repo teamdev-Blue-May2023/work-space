@@ -7,11 +7,19 @@
   <style>
     body {
       background-image: url(https://sozaino.site/wp-content/uploads/2021/11/gameneon03.jpg);
+      text-align: center;
     }
 
     #container {
       margin: 0 auto;
     }
+
+    #startButton {
+      font-size: 20px;
+      border-radius: 15px; 
+      background-color: #b2d8d8; 
+    }
+    
   </style>
 </head>
 
@@ -19,6 +27,7 @@
   <div id="container">
     <canvas id="cvs"></canvas>
   </div>
+  <button id="startButton">Start Game</button>
   <script>
     //ブロック1マスの大きさ
     const blockSize = 30;
@@ -224,6 +233,14 @@
           board[y][x] = 0;
         }
       }
+
+            //ゲーム開始の処理
+            //Startボタンを押した時の処理
+            window.onload = function() {
+              document.getElementById("startButton").onclick = function() {
+                init();
+              };
+            };
 
       draw();
     };
