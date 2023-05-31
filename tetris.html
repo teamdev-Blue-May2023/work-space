@@ -16,10 +16,9 @@
 
     #startButton {
       font-size: 20px;
-      border-radius: 15px; 
-      background-color: #b2d8d8; 
+      border-radius: 15px;
+      background-color: #b2d8d8;
     }
-    
   </style>
 </head>
 
@@ -105,16 +104,16 @@
 
     //テトリミノの配列に対する色設定
     const tetColors = [
-        '', // 0は空のため色もなし
-        '#faebd7',
-        '#6495ed',
-        '#00ff7f',
-        '#cd853f',
-        '#ff00ff',
-        '#4b0082',
-        '#f0f8ff',
-        '#808000',
-      ];
+      '', // 0は空のため色もなし
+      '#faebd7',
+      '#6495ed',
+      '#00ff7f',
+      '#cd853f',
+      '#ff00ff',
+      '#4b0082',
+      '#f0f8ff',
+      '#808000',
+    ];
 
     let tet_idx = 4;
     let tet = tetTypes[tet_idx];
@@ -168,17 +167,19 @@
     document.onkeydown = (e) => {
       switch (e.keyCode) {
         case 37: //左
-            if (canMove(-1, 0)) offsetX--;
-            break;
-          case 39: //右
-            if (canMove(1, 0)) offsetX++;
-            break;
-          case 40: //下
-            if (canMove(0, 1)) offsetY++;
-            break;
+          if (canMove(-1, 0)) offsetX--;
+          break;
+        case 39: //右
+          if (canMove(1, 0)) offsetX++;
+          break;
+        case 40: //下
+          if (canMove(0, 1)) offsetY++;
+          break;
         case 32: //space
           let newTet = createRotateTet();
-          tet = newTet;
+          if (canMove(0, 0, newTet)) {
+            tet = newTet;
+          }
       }
       draw();
     };
@@ -197,32 +198,32 @@
     };
 
     //移動の制限
-    const canMove = (dx, dy) => {
-        for (let y = 0; y < tetSize; y++) {
-          for (let x = 0; x < tetSize; x++) {
-            //その場所にブロックがあれば
-            if (tet[y][x]) {
-              //ボード座標に変換
-              let nx = offsetX + x + dx;
-              let ny = offsetY + y + dy;
-              if (
-                //調査する座標がボード外だったらできない
-                ny < 0 ||
-                nx < 0 ||
-                ny >= boardRow ||
-                nx >= boardCol ||
-                //移動したいボード上の場所にすでに存在してたらできない
-                board[ny][nx]
-              ) {
-                //移動できない
-                return false;
-              }
+    const canMove = (dx, dy, nowTet = tet) => {
+      for (let y = 0; y < tetSize; y++) {
+        for (let x = 0; x < tetSize; x++) {
+          //その場所にブロックがあれば
+          if (nowTet[y][x]) {
+            //ボード座標に変換
+            let nx = offsetX + x + dx;
+            let ny = offsetY + y + dy;
+            if (
+              //調査する座標がボード外だったらできない
+              ny < 0 ||
+              nx < 0 ||
+              ny >= boardRow ||
+              nx >= boardCol ||
+              //移動したいボード上の場所にすでに存在してたらできない
+              board[ny][nx]
+            ) {
+              //移動できない
+              return false;
             }
           }
         }
-        //移動できる
-        return true;
-      };
+      }
+      //移動できる
+      return true;
+    };
 
     //初期化処理
     const init = () => {
@@ -234,13 +235,13 @@
         }
       }
 
-            //ゲーム開始の処理
-            //Startボタンを押した時の処理
-            window.onload = function() {
-              document.getElementById("startButton").onclick = function() {
-                init();
-              };
-            };
+      //ゲーム開始の処理
+      //Startボタンを押した時の処理
+      window.onload = function () {
+        document.getElementById("startButton").onclick = function () {
+          init();
+        };
+      };
 
       draw();
     };
