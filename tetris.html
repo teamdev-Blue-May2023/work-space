@@ -50,16 +50,13 @@
 
     // tetの1辺の長さ
     const tetSize = 4;
+    // ゲームオーバー状態を表す変数
+    let isGameOver = false;
+
 
     //テトリミノの追加
     const tetTypes = [
       [], //配列のインデックス0は空としておく。
-      [
-        [0, 0, 0, 1],
-        [0, 0, 1, 0],
-        [0, 1, 0, 0],
-        [1, 0, 0, 0],
-      ],
       [
         [0, 0, 0, 0],
         [0, 0, 1, 1],
@@ -106,16 +103,16 @@
 
     //テトリミノの配列に対する色設定
     const tetColors = [
-        '', // 0は空のため色もなし
-        '#faebd7',
-        '#6495ed',
-        '#00ff7f',
-        '#cd853f',
-        '#ff00ff',
-        '#4b0082',
-        '#f0f8ff',
-        '#808000',
-      ];
+      '', // 0は空のため色もなし
+      '#faebd7',
+      '#6495ed',
+      '#00ff7f',
+      '#cd853f',
+      '#ff00ff',
+      '#4b0082',
+      '#f0f8ff',
+      '#808000',
+    ];
 
     let tet_idx = 4;
     let tet = tetTypes[tet_idx];
@@ -145,6 +142,23 @@
         }
       }
 
+      // ゲームオーバーのチェック
+      if (isGameOver) {
+        ctx.font = '30px Arial';
+ctx.fillStyle = '#FF0000'; // 赤色でテキストを描画
+let text = 'Game Over';
+
+// measureText()でテキストの長さを取得
+let metrics = ctx.measureText(text);
+
+// textBaselineとtextAlignをセットしてテキストの描画位置を調整
+ctx.textBaseline = 'middle';
+ctx.textAlign = 'center';
+
+ctx.fillText(text, canvasW / 2, canvasH / 2);
+
+        return; // 描画ストップ
+      }
       // 「移動」「回転」の動作確認のためにテトリミノのサンプルを一つ描画する
       for (let y = 0; y < tetSize; y++) {
         for (let x = 0; x < tetSize; x++) {
@@ -153,7 +167,17 @@
           }
         }
       }
-    }
+    }//end of draw
+
+    //GameOverチェック関数
+    const checkGameOver = () => {
+      for (let x = 0; x < boardCol; x++) {
+        if (board[1][x] !== 0) {
+          return true;
+        }
+      }
+      return false;
+    };
 
     //回転
     const createRotateTet = () => {
@@ -172,23 +196,23 @@
     document.onkeydown = (e) => {
       switch (e.keyCode) {
         case 37: //左
-            if (canMove(-1, 0)) offsetX--;
-            break;
-          case 39: //右
-            if (canMove(1, 0)) offsetX++;
-            break;
-          case 40: //下
-            if (canMove(0, 1)) offsetY++;
-            break;
+          if (canMove(-1, 0)) offsetX--;
+          break;
+        case 39: //右
+          if (canMove(1, 0)) offsetX++;
+          break;
+        case 40: //下
+          if (canMove(0, 1)) offsetY++;
+          break;
         case 32: //space
           let newTet = createRotateTet();
           if (canMove(0, 0, newTet)) {
-          tet = newTet;
-          } 
+            tet = newTet;
+          }
           break;
         case 38: //上ボタンで即着地
           while (canMove(0, 1)) offsetY++;
-          break;    
+          break;
       }
       draw();
     };
@@ -208,66 +232,73 @@
 
     //移動の制限
     const canMove = (dx, dy) => {
-        for (let y = 0; y < tetSize; y++) {
-          for (let x = 0; x < tetSize; x++) {
-            //その場所にブロックがあれば
-            if (tet[y][x]) {
-              //ボード座標に変換
-              let nx = offsetX + x + dx;
-              let ny = offsetY + y + dy;
-              if (
-                //調査する座標がボード外だったらできない
-                ny < 0 ||
-                nx < 0 ||
-                ny >= boardRow ||
-                nx >= boardCol ||
-                //移動したいボード上の場所にすでに存在してたらできない
-                board[ny][nx]
-              ) {
-                //移動できない
-                return false;
-              }
+      for (let y = 0; y < tetSize; y++) {
+        for (let x = 0; x < tetSize; x++) {
+          //その場所にブロックがあれば
+          if (tet[y][x]) {
+            //ボード座標に変換
+            let nx = offsetX + x + dx;
+            let ny = offsetY + y + dy;
+            if (
+              //調査する座標がボード外だったらできない
+              ny < 0 ||
+              nx < 0 ||
+              ny >= boardRow ||
+              nx >= boardCol ||
+              //移動したいボード上の場所にすでに存在してたらできない
+              board[ny][nx]
+            ) {
+              //移動できない
+              return false;
             }
           }
         }
-        //移動できる
-        return true;
-      };
+      }
+      //移動できる
+      return true;
+    };
 
-      //動きが止まったtetをボード座標に書き写す
-      const fixTet = () => {
-        for (let y = 0; y < tetSize; y++) {
-          for (let x = 0; x < tetSize; x++) {
-            if (tet[y][x]) {
-              //ボードに書き込む
-              board[offsetY + y][offsetX + x] = tet_idx;
-            }
+    //動きが止まったtetをボード座標に書き写す
+    const fixTet = () => {
+      for (let y = 0; y < tetSize; y++) {
+        for (let x = 0; x < tetSize; x++) {
+          if (tet[y][x]) {
+            //ボードに書き込む
+            board[offsetY + y][offsetX + x] = tet_idx;
           }
         }
-      };
+      }
+    };
 
-      //繰り返し行われる落下処理
-      const dropTet = () => {
-        //下に行けたら
-        if (canMove(0, 1)) {
-          //下に行く
-          offsetY++;
-        } else {
-          //行けなかったら固定する
-          fixTet();
-          //抽選
-          tet_idx = randomIdx();
-          tet = tetTypes[tet_idx];
-          //初期位置に戻す
-          initStartPos();
+    //繰り返し行われる落下処理
+    const dropTet = () => {
+      //下に行けたら
+      if (canMove(0, 1)) {
+        //下に行く
+        offsetY++;
+      } else {
+        //行けなかったら固定する
+        fixTet();
+
+        if (checkGameOver()) {
+          clearInterval(timerId);
+          isGameOver = true; // ゲームオーバー状態にする
         }
-        draw();
-      };
+
+        //抽選
+        tet_idx = randomIdx();
+        tet = tetTypes[tet_idx];
+        //初期位置に戻す
+        initStartPos();
+                // ゲームオーバーチェックを移動
+      }
+      draw();
+    };
 
     // 自動落下
-    const initStartPos=()=>{
+    const initStartPos = () => {
       offsetX = boardCol / 2 - tetSize / 2;
-      offsetY= 0;    
+      offsetY = 0;
     };
 
     //テトリミノのindexを抽選
@@ -284,7 +315,7 @@
           board[y][x] = 0;
         }
 
-       
+
 
       }
       //最初のテトリミノを抽選
@@ -295,7 +326,7 @@
 
 
       //繰り返し処理
-      timerId=setInterval(dropTet,speed);
+      timerId = setInterval(dropTet, speed);
 
       //ゲーム開始の処理
       //Startボタンを押した時の処理
