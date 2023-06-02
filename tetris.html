@@ -149,7 +149,7 @@
       for (let y = 0; y < tetSize; y++) {
         for (let x = 0; x < tetSize; x++) {
           if (tet[y][x]) {
-            drawBlock(x, y, tet_idx);
+            drawBlock(offsetX + x, offsetY + y, tet_idx);
           }
         }
       }
@@ -195,8 +195,8 @@
 
     // ブロックの描画
     const drawBlock = (x, y, tet_idx) => {
-      let px = (offsetX + x) * blockSize;
-      let py = (offsetY + y) * blockSize;
+      let px = x * blockSize;
+      let py = y * blockSize;
       //塗りを設定
       ctx.fillStyle = tetColors[tet_idx];
       ctx.fillRect(px, py, blockSize, blockSize);
@@ -234,6 +234,18 @@
         return true;
       };
 
+      //動きが止まったtetをボード座標に書き写す
+      const fixTet = () => {
+        for (let y = 0; y < tetSize; y++) {
+          for (let x = 0; x < tetSize; x++) {
+            if (tet[y][x]) {
+              //ボードに書き込む
+              board[offsetY + y][offsetX + x] = tet_idx;
+            }
+          }
+        }
+      };
+
       //繰り返し行われる落下処理
       const dropTet = () => {
         //下に行けたら
@@ -241,15 +253,27 @@
           //下に行く
           offsetY++;
         } else {
+          //行けなかったら固定する
+          fixTet();
+          //抽選
+          tet_idx = randomIdx();
+          tet = tetTypes[tet_idx];
+          //初期位置に戻す
+          initStartPos();
         }
         draw();
       };
 
-      // 自動落下
-      const initStartPos=()=>{
-        offsetX = boardCol / 2 - tetSize / 2;
-        offsetY= 0;    
-      }
+    // 自動落下
+    const initStartPos=()=>{
+      offsetX = boardCol / 2 - tetSize / 2;
+      offsetY= 0;    
+    };
+
+    //テトリミノのindexを抽選
+    const randomIdx = () => {
+      return Math.floor(Math.random() * (tetTypes.length - 1)) + 1;
+    };
 
     //初期化処理
     const init = () => {
@@ -260,9 +284,15 @@
           board[y][x] = 0;
         }
 
-        initStartPos();
+       
 
       }
+      //最初のテトリミノを抽選
+      tet_idx = randomIdx();
+      tet = tetTypes[tet_idx];
+
+      initStartPos();
+
 
       //繰り返し処理
       timerId=setInterval(dropTet,speed);
