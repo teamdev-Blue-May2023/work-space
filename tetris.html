@@ -19,10 +19,17 @@
       border-radius: 15px;
       background-color: #b2d8d8;
     }
+
+    #score {
+      color: white;
+      font-size: 30px;
+    }
+
   </style>
 </head>
 
 <body onload="init()">
+  <div id="score">Score: 0</div> <!-- スコア表示 -->
   <div id="container">
     <canvas id="cvs"></canvas>
   </div>
@@ -31,6 +38,8 @@
     <canvas id="pre"></canvas>
   </div>
   <script>
+    let score = 0; // スコアの初期化
+
     // 落下スピード
     const speed = 500;
     //ブロック1マスの大きさ
@@ -302,6 +311,9 @@
               board[ny][nx] = board[ny - 1][nx];
             }
           }
+           //スコアを更新
+           score += 10;
+           document.getElementById("score").innerText = "Score: " + score;
         }
       }
     };
@@ -351,13 +363,14 @@
         for (let x = 0; x < boardCol; x++) {
           board[y][x] = 0;
         }
-
-
-
       }
       //最初のテトリミノを抽選
       tet_idx = randomIdx();
       tet = tetTypes[tet_idx];
+
+       // スコアのリセット
+       score = 0;
+       document.getElementById("score").innerText = "Score: " + score;
 
       initStartPos();
 
