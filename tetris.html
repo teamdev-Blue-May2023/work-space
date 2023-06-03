@@ -24,13 +24,22 @@
       color: white;
       font-size: 30px;
     }
+
+    #squareBox {
+      width: 100px;
+      height: 100px;
+      background-color: white;
+      margin: auto;
+      margin-bottom: 20px;
+      }
   </style>
 </head>
 
 <body onload="init()">
-  <div id="score">Score: 0</div> <!-- スコア表示 -->
+  <div id="score">Score: 0</div>
+  <div id="squareBox"></div> <!-- Add this -->
   <div id="container">
-    <canvas id="cvs"></canvas>
+  <div> <canvas id="cvs"></canvas> </div>
   </div>
   <button id="startButton">Start Game</button>
   <div id="preview">
