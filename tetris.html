@@ -14,6 +14,10 @@
       margin: 0 auto;
     }
 
+    #container canvas {
+      background-color: black;
+    }
+
     #startButton {
       font-size: 20px;
       border-radius: 15px;
@@ -27,8 +31,12 @@
   </style>
 </head>
 
+<<<<<<< Updated upstream
 <body onload="init()">
   <div id="score">Score: 0</div> <!-- スコア表示 -->
+=======
+<body>
+>>>>>>> Stashed changes
   <div id="container">
     <canvas id="cvs"></canvas>
   </div>
@@ -112,8 +120,16 @@
       ],
     ];
 
+    let tet;
+    let nextTet;
+    let tetRow;
+    let tetCol;
+    let tetNumber;
+    let nextTetNumber;
+
     //テトリミノの配列に対する色設定
     const tetColors = [
+<<<<<<< Updated upstream
       'rgba(250, 250, 250, 0.2)', // 0は空のため色もなし
       'rgba(255, 255, 0, 1)',
       'rgba(147, 112, 219, 1)',
@@ -123,9 +139,51 @@
       'rgba(30, 144, 255, 1)',
       'rgba(255, 140, 0, 1)',
     ];
+=======
+      '', // 0は空のため色もなし
+      '#faebd7',
+      '#6495ed',
+      '#00ff7f',
+      '#cd853f',
+      '#ff00ff',
+      '#4b0082',
+      '#f0f8ff',
+      '#808000',
+    ];
 
-    let tet_idx = 4;
-    let tet = tetTypes[tet_idx];
+    /*    let tet_idx = 4;
+        let tet = tetTypes[tet_idx];
+    */
+
+        // 現在のテトリミノと次のテトリミノ
+        let tet_idx = getRandomTet();
+        let next_tet_idx = getRandomTet();
+        let tet = tetTypes[tet_idx];
+        let next_tet = tetTypes[next_tet_idx];
+        // 次のテトリミノを表示するためのCanvas
+        const nextCvs = document.createElement('canvas');
+        const nextCtx = nextCvs.getContext('2d');
+        nextCvs.width = blockSize * tetSize;
+        nextCvs.height = blockSize * tetSize;
+        document.body.insertBefore(nextCvs, cvs.nextSibling);
+
+        function initGame() {
+          tetNumber = getRandomTet();
+          nextTetNumber = getRandomTet();
+          tet = tetTypes[tetNumber];
+          nextTet = tetTypes[nextTetNumber];
+          tetRow = 0;
+          tetCol = 3;
+          drawGame();
+        }
+
+    // テトリミノのランダム生成
+    const getRandomTet = () => {
+      // ランダムなインデックスを生成（1〜tetTypes.length - 1）
+      return Math.floor(Math.random() * (tetTypes.length - 1)) + 1;
+    };
+>>>>>>> Stashed changes
+
 
     //ボード本体
     const board = [];
@@ -222,7 +280,11 @@
         case 40: //下
           if (canMove(0, 1)) offsetY++;
           break;
+<<<<<<< Updated upstream
         case 38: //上で回転
+=======
+        case 32: //space
+>>>>>>> Stashed changes
           let newTet = createRotateTet();
           if (canMove(0, 0, newTet)) {
             tet = newTet;
@@ -245,25 +307,51 @@
       draw();
     };
 
+<<<<<<< Updated upstream
     // ブロックの描画
     const drawBlock = (x, y, tet_idx) => {
       let px = x * blockSize;
       let py = y * blockSize;
       //塗りを設定
+=======
+    // 次のテトリミノを描画
+    const drawNextTet = () => {
+      nextCtx.fillStyle = '#000';
+      nextCtx.fillRect(0, 0, nextCvs.width, nextCvs.height);
+      for (let y = 0; y < tetSize; y++) {
+        for (let x = 0; x < tetSize; x++) {
+          if (next_tet[y][x]) {
+            drawBlock(nextCtx, x, y, next_tet_idx);
+          }
+        }
+      }
+    };
+
+    // ブロックの描画をコンテキストを引数とするように修正
+    const drawBlock = (ctx, x, y, tet_idx) => {
+      let px = x * blockSize;
+      let py = y * blockSize;
+>>>>>>> Stashed changes
       ctx.fillStyle = tetColors[tet_idx];
       ctx.fillRect(px, py, blockSize, blockSize);
-      //線を設定
       ctx.strokeStyle = 'black';
-      //線を描画
       ctx.strokeRect(px, py, blockSize, blockSize);
     };
 
     //移動の制限
+<<<<<<< Updated upstream
     const canMove = (dx, dy, nowTet = tet) => {
       for (let y = 0; y < tetSize; y++) {
         for (let x = 0; x < tetSize; x++) {
           //その場所にブロックがあれば
           if (nowTet[y][x]) {
+=======
+    const canMove = (dx, dy) => {
+      for (let y = 0; y < tetSize; y++) {
+        for (let x = 0; x < tetSize; x++) {
+          //その場所にブロックがあれば
+          if (tet[y][x]) {
+>>>>>>> Stashed changes
             //ボード座標に変換
             let nx = offsetX + x + dx;
             let ny = offsetY + y + dy;
@@ -286,6 +374,7 @@
       return true;
     };
 
+<<<<<<< Updated upstream
     //動きが止まったtetをボード座標に書き写す
     const fixTet = () => {
       for (let y = 0; y < tetSize; y++) {
@@ -326,6 +415,8 @@
       }
     };
 
+=======
+>>>>>>> Stashed changes
     //繰り返し行われる落下処理
     const dropTet = () => {
       //下に行けたら
@@ -333,6 +424,7 @@
         //下に行く
         offsetY++;
       } else {
+<<<<<<< Updated upstream
         //行けなかったら固定する
         fixTet();
         //揃ったラインがあったら消す
@@ -348,6 +440,15 @@
         //初期位置に戻す
         initStartPos();
         // ゲームオーバーチェックを移動
+=======
+        // 現在のテトリミノが着地したら次のテトリミノを落とす
+        tet_idx = next_tet_idx;
+        tet = tetTypes[tet_idx];
+        next_tet_idx = getRandomTet();
+        next_tet = tetTypes[next_tet_idx];
+        drawNextTet(); // 次のテトリミノを描画
+        initStartPos(); // テトリミノの開始位置をリセット
+>>>>>>> Stashed changes
       }
       draw();
     };
@@ -356,12 +457,16 @@
     const initStartPos = () => {
       offsetX = boardCol / 2 - tetSize / 2;
       offsetY = 0;
+<<<<<<< Updated upstream
     };
 
     //テトリミノのindexを抽選
     const randomIdx = () => {
       return Math.floor(Math.random() * (tetTypes.length - 1)) + 1;
     };
+=======
+    }
+>>>>>>> Stashed changes
 
     //初期化処理
     const init = () => {
@@ -383,8 +488,11 @@
       initStartPos();
 
 
+      initStartPos();
+      drawNextTet(); // 次のテトリミノを描画
       //繰り返し処理
       timerId = setInterval(dropTet, speed);
+<<<<<<< Updated upstream
 
       //ゲーム開始の処理
       //Startボタンを押した時の処理
@@ -394,8 +502,26 @@
         };
       };
 
+=======
+>>>>>>> Stashed changes
       draw();
     };
+
+    //ゲーム開始の処理
+    //Startボタンを押した時の処理
+    window.onload = function () {
+      document.getElementById("startButton").onclick = function () {
+        clearInterval(timerId); // タイマーをリセット
+        tet_idx = getRandomTet();
+        next_tet_idx = getRandomTet();
+        tet = tetTypes[tet_idx];
+        next_tet = tetTypes[next_tet_idx];
+        init();
+      };
+    };
+
+    // init関数の呼び出し
+    init();
   </script>
 </body>
 
