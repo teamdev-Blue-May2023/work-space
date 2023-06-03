@@ -27,6 +27,9 @@
     <canvas id="cvs"></canvas>
   </div>
   <button id="startButton">Start Game</button>
+  <div id="preview">
+    <canvas id="pre"></canvas>
+  </div>
   <script>
     // 落下スピード
     const speed = 300;
@@ -103,7 +106,7 @@
 
     //テトリミノの配列に対する色設定
     const tetColors = [
-      '', // 0は空のため色もなし
+      '#ffffff', // 0は空のため色もなし
       '#faebd7',
       '#6495ed',
       '#00ff7f',
@@ -142,6 +145,10 @@
         }
       }
 
+      //着地点
+      let plus=0;
+      while(canMove(0, plus+1, tet)) plus++;
+
       // ゲームオーバーのチェック
       if (isGameOver) {
         ctx.font = '30px Arial';
@@ -163,6 +170,9 @@
       for (let y = 0; y < tetSize; y++) {
         for (let x = 0; x < tetSize; x++) {
           if (tet[y][x]) {
+            //着地点を描画
+            drawBlock(offsetX + x, offsetY + y + plus, 0)
+            //テトリミノを描画
             drawBlock(offsetX + x, offsetY + y, tet_idx);
           }
         }
