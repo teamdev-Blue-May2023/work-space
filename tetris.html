@@ -24,7 +24,6 @@
       color: white;
       font-size: 30px;
     }
-
   </style>
 </head>
 
@@ -154,8 +153,8 @@
       }
 
       //着地点
-      let plus=0;
-      while(canMove(0, plus+1, tet)) plus++;
+      let plus = 0;
+      while (canMove(0, plus + 1, tet)) plus++;
 
       // ゲームオーバーのチェック
       if (isGameOver) {
@@ -228,6 +227,16 @@
           if (canMove(0, 0, newTet)) {
             tet = newTet;
           }
+          else {
+            // 回転後の位置がボード内に収まらない場合、壁蹴りを試みる
+            if (canMove(1, 0, newTet)) {
+              offsetX++;
+              tet = newTet;
+            } else if (canMove(-1, 0, newTet)) {
+              offsetX--;
+              tet = newTet;
+            }
+          }
           break;
         case 32: //スペースキーで確定、即着地
           while (canMove(0, 1)) offsetY++;
@@ -267,7 +276,7 @@
               //移動したいボード上の場所にすでに存在してたらできない
               board[ny][nx]
             ) {
-              //移動できない
+              // 移動できない
               return false;
             }
           }
@@ -310,9 +319,9 @@
               board[ny][nx] = board[ny - 1][nx];
             }
           }
-           //スコアを更新
-           score += 10;
-           document.getElementById("score").innerText = "Score: " + score;
+          //スコアを更新
+          score += 10;
+          document.getElementById("score").innerText = "Score: " + score;
         }
       }
     };
@@ -367,9 +376,9 @@
       tet_idx = randomIdx();
       tet = tetTypes[tet_idx];
 
-       // スコアのリセット
-       score = 0;
-       document.getElementById("score").innerText = "Score: " + score;
+      // スコアのリセット
+      score = 0;
+      document.getElementById("score").innerText = "Score: " + score;
 
       initStartPos();
 
