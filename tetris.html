@@ -43,6 +43,7 @@
     <div> <canvas id="cvs"></canvas> </div>
     <div><canvas id="squareBox"></canvas></div>
     <div id="holdBox">Hold: <canvas id="holdCanvas"></canvas></div>
+    <audio id="bgm" src="https://cdn.pixabay.com/download/audio/2023/04/08/audio_5fd3e66ac3.mp3" loop></audio>
   </div>
   <button id="startButton">Start Game</button>
   <script>
@@ -455,6 +456,11 @@
           board[y][x] = 0;
         }
       }
+
+      // BGM追加
+      const bgm = document.getElementById('bgm');
+      bgm.play();
+
       //最初のテトリミノを抽選
       tet_idx = randomIdx();
       tet = tetTypes[tet_idx];
