@@ -70,6 +70,7 @@
    
     <audio id="bgm" src="https://cdn.pixabay.com/download/audio/2023/04/08/audio_5fd3e66ac3.mp3" loop></audio>
     <audio id="effect" src="https://assets.mixkit.co/active_storage/sfx/212/212-preview.mp3"></audio>
+    <audio id="alarm" src="https://assets.mixkit.co/active_storage/sfx/995/995-preview.mp3"></audio>
   </div>
   <div id="button-container">
     <button id="startButton">Start Game</button>
@@ -114,6 +115,8 @@
     //Speed up stop
     let speedStop = false;
 
+    // 最初からBGM再生
+    bgm.play();
 
     //テトリミノの追加
     const tetTypes = [
@@ -531,6 +534,8 @@
           isGameOver = true; // ゲームオーバー状態にする
           bgm.pause(); // BGM停止、最初に戻す
           bgm.currentTime = 0;
+          const alarm = document.getElementById('alarm'); // 終了時にアラームを鳴らす
+          alarm.play();
         }
 
         //抽選
