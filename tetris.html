@@ -414,17 +414,20 @@
 
       //繰り返し処理
       timerId = setInterval(dropTet, speed);
-
-      //ゲーム開始の処理
-      //Startボタンを押した時の処理
-      window.onload = function () {
-        document.getElementById("startButton").onclick = function () {
-          init();
-        };
-      };
-
       draw();
     };
+              //ゲーム開始の処理
+      //Startボタンを押した時の処理
+      document.getElementById("startButton").addEventListener("click", function() {
+        if (timerId !== null) {
+          clearInterval(timerId);
+          timerId = null;
+        }
+        isGameOver = false;
+        init();
+        console.log("Game has started!");
+      });
+      
   </script>
 </body>
 
