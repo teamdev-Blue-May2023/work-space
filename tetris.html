@@ -233,6 +233,63 @@
       // preview.fillRect(center, center, blockSize, blockSize);
     }
 
+    // ホールド機能
+    let holdTet = null; // ホールドテトリミノの初期化
+    let holdTet_idx = null;
+    let isHolded = false; // ホールドがすでに使用されたかを示すフラグ
+    const holdCanvas = document.getElementById("holdCanvas");
+    const holdCtx = holdCanvas.getContext("2d");
+    holdCanvas.width = blockSize * tetSize;
+    holdCanvas.height = blockSize * tetSize;
+
+    const hold = () => {
+      if (!isHolded) {
+        // ホールドエリアが空なら
+        holdTet = tet; // 現在のテトリミノをホールドに移す
+        holdTet_idx = tet_idx;
+        tet_idx = randomIdx();
+        tet = tetTypes[tet_idx];
+        initStartPos(); // 初期位置に戻す
+      } else {
+        // ホールドエリアが空でないなら
+        // フィールドとホールエリアをスワップする
+        let tempTet = tet;
+        let temp_idx = tet_idx;
+        tet = holdTet;
+        tet_idx = holdTet_idx;
+        holdTet = tempTet;
+        holdTet_idx = temp_idx;
+      }
+      drawHold(); // ホールドエリアの描画を更新
+      isHolded = true; // ホールドを使用済みにする
+    };
+
+    // ホールドエリアの描画
+    const drawHold = () => {
+      holdCtx.fillStyle = "#000";
+      holdCtx.fillRect(0, 0, holdCanvas.width, holdCanvas.height);
+      if (holdTet !== null) {
+        for (let y = 0; y < tetSize; y++) {
+          for (let x = 0; x < tetSize; x++) {
+            if (holdTet[y][x]) {
+              drawBlockHold(x, y, holdTet_idx);
+            }
+          }
+        }
+      }
+    };
+
+    // ホールドエリアでのブロックの描画
+    const drawBlockHold = (x, y, holdTet_idx) => {
+      let px = x * blockSize;
+      let py = y * blockSize;
+      holdCtx.fillStyle = tetColors[holdTet_idx];
+      holdCtx.fillRect(px, py, blockSize, blockSize);
+      holdCtx.strokeStyle = "black";
+      holdCtx.strokeRect(px, py, blockSize, blockSize);
+    };
+
+
     //GameOverチェック関数
     const checkGameOver = () => {
       for (let x = 0; x < boardCol; x++) {
@@ -287,6 +344,9 @@
           break;
         case 32: //スペースキーで確定、即着地
           while (canMove(0, 1)) offsetY++;
+          break;
+        case 72: //Hキーでホールド
+          hold();
           break;
       }
       draw();
