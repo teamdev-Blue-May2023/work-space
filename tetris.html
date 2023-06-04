@@ -26,6 +26,14 @@
       font-size: 30px;
     }
 
+    #holdBox {
+      width: 120px;
+      height: 120px;
+      color: white;
+      background-color: rgb(105, 105, 105);
+      margin: auto;
+      margin-bottom: 20px;
+    }
   </style>
 </head>
 
@@ -34,6 +42,7 @@
   <div id="container">
     <div> <canvas id="cvs"></canvas> </div>
     <div><canvas id="squareBox"></canvas></div>
+    <div id="holdBox">Hold: <canvas id="holdCanvas"></canvas></div>
   </div>
   <button id="startButton">Start Game</button>
   <script>
@@ -207,14 +216,14 @@
           if (tet[y][x]) {
             let px = x * blockSize;
             let py = y * blockSize;
-            prex.fillStyle=tetColors[tet_idx];
+            prex.fillStyle = tetColors[tet_idx];
             //x座標150,y座標150の場所に幅30,縦30の四角を描画
-            prex.fillRect(px , py, blockSize, blockSize);
+            prex.fillRect(px, py, blockSize, blockSize);
             //線を設定
             prex.strokeStyle = 'black';
-           //線を描画
+            //線を描画
             prex.strokeRect(px, py, blockSize, blockSize);
-            
+
           }
         }
       }
@@ -426,8 +435,15 @@
     };
 
     //テトリミノのindexを抽選
+    let previousIdx = null; // 直前の抽選結果を保持する変数
     const randomIdx = () => {
-      return Math.floor(Math.random() * (tetTypes.length - 1)) + 1;
+      let idx = Math.floor(Math.random() * (tetTypes.length - 1)) + 1;
+      while (idx === previousIdx) {
+        // 直前の抽選結果と同じ値が出た場合は再抽選する
+        idx = Math.floor(Math.random() * (tetTypes.length - 1)) + 1;
+      }
+      previousIdx = idx; // 直前の抽選結果を更新
+      return idx;
     };
 
     //初期化処理
@@ -458,18 +474,18 @@
       draw();
       drawPreview(next_tet_idx)
     };
-              //ゲーム開始の処理
-      //Startボタンを押した時の処理
-      document.getElementById("startButton").addEventListener("click", function() {
-        if (timerId !== null) {
-          clearInterval(timerId);
-          timerId = null;
-        }
-        isGameOver = false;
-        init();
-        console.log("Game has started!");
-      });
-      
+    //ゲーム開始の処理
+    //Startボタンを押した時の処理
+    document.getElementById("startButton").addEventListener("click", function () {
+      if (timerId !== null) {
+        clearInterval(timerId);
+        timerId = null;
+      }
+      isGameOver = false;
+      init();
+      console.log("Game has started!");
+    });
+
   </script>
 </body>
 
