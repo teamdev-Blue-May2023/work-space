@@ -12,6 +12,7 @@
 
     #container {
       margin: 0 auto;
+      display: flex;
     }
 
     #startButton {
@@ -25,26 +26,16 @@
       font-size: 30px;
     }
 
-    #squareBox {
-      width: 100px;
-      height: 100px;
-      background-color: white;
-      margin: auto;
-      margin-bottom: 20px;
-    }
   </style>
 </head>
 
 <body onload="init()">
   <div id="score">Score: 0</div>
-  <div id="squareBox"></div> <!-- Add this -->
   <div id="container">
     <div> <canvas id="cvs"></canvas> </div>
+    <div><canvas id="squareBox"></canvas></div>
   </div>
   <button id="startButton">Start Game</button>
-  <div id="preview">
-    <canvas id="pre"></canvas>
-  </div>
   <script>
     let score = 0; // スコアの初期化
 
@@ -64,9 +55,18 @@
     const canvasH = blockSize * boardRow;
     cvs.width = canvasW;
     cvs.height = canvasH;
+
+    const preview = document.getElementById('squareBox')
+    const prex = preview.getContext('2d');
+
+    const previewW = blockSize * 5;
+    const previewH = blockSize * 4;
+
+    preview.width = previewW;
+    preview.height = previewH;
     //コンテナの設定
     const container = document.getElementById("container");
-    container.style.width = canvasW + 'px';
+    container.style.width = canvasW + previewW + 'px';
 
     // tetの1辺の長さ
     const tetSize = 4;
@@ -131,7 +131,6 @@
       'rgba(0, 255, 255, 1)',
       'rgba(30, 144, 255, 1)',
       'rgba(255, 140, 0, 1)',
-      'rgba(255, 105, 180, 1)'
     ];
 
     let tet_idx = 4;
@@ -195,6 +194,33 @@
         }
       }
     }//end of draw
+
+    const drawPreview = (tet_idx) => {
+      //塗りを設定
+      prex.fillStyle = '#000';
+      //キャンバスを塗りつぶす
+      prex.fillRect(0, 0, previewW, previewH);
+
+      for (let y = 0; y < tetSize; y++) {
+        for (let x = 0; x < tetSize; x++) {
+          if (tet[y][x]) {
+            let px = x * blockSize;
+            let py = y * blockSize;
+            prex.fillStyle=tetColors[tet_idx];
+            //x座標150,y座標150の場所に幅30,縦30の四角を描画
+            prex.fillRect(px , py, blockSize, blockSize);
+            //線を設定
+            prex.strokeStyle = 'black';
+           //線を描画
+            prex.strokeRect(px, py, blockSize, blockSize);
+            
+          }
+        }
+      }
+
+      // preview.fillStyle = tetColors[tet_idx];
+      // preview.fillRect(center, center, blockSize, blockSize);
+    }
 
     //GameOverチェック関数
     const checkGameOver = () => {
@@ -308,31 +334,6 @@
       }
     };
 
-    const flashLine = (line) => {
-      // 一列全てを順番に（tetColorsの8番目）に変える
-      for (let nx = 0; nx < boardCol; nx++) {
-        // nx * 10ミリ秒ごとに色を変更
-        setTimeout(() => {
-          board[line][nx] = 8;
-          // 描画を更新
-          draw();
-        }, nx * 20);
-      }
-
-      // 一定時間後にライン消去
-      setTimeout(() => {
-        //その行から上に向かってfor文を動かす
-        for (let ny = line; ny > 0; ny--) {
-          for (let nx = 0; nx < boardCol; nx++) {
-            //一列上の情報をコピーする
-            board[ny][nx] = board[ny - 1][nx];
-          }
-        }
-        //再度描画を更新
-        draw();
-      }, boardCol * 20 + 30);  // 合計時間（全てのセルの色が変わるのに必要な時間 + 余裕時間）
-    };
-
     const clearLine = () => {
       //ボードの行を上から調査
       for (let y = 0; y < boardRow; y++) {
@@ -347,7 +348,13 @@
           }
         }
         if (isLineOK) {//ここに来るということはその列が揃っていたことを意味する
-          flashLine(y); // フラッシュエフェクトを実行
+          //その行から上に向かってfor文を動かす
+          for (let ny = y; ny > 0; ny--) {
+            for (let nx = 0; nx < boardCol; nx++) {
+              //一列上の情報をコピーする
+              board[ny][nx] = board[ny - 1][nx];
+            }
+          }
           //スコアを更新
           score += 10;
           document.getElementById("score").innerText = "Score: " + score;
@@ -372,13 +379,17 @@
         }
 
         //抽選
-        tet_idx = randomIdx();
-        tet = tetTypes[tet_idx];
+        tet_idx = next_tet_idx;
+        tet = next_tet;
+
+        next_tet_idx = randomIdx();
+        next_tet = tetTypes[next_tet_idx];
         //初期位置に戻す
         initStartPos();
         // ゲームオーバーチェックを移動
       }
       draw();
+      drawPreview(next_tet_idx)
     };
 
     // 自動落下
@@ -405,6 +416,9 @@
       tet_idx = randomIdx();
       tet = tetTypes[tet_idx];
 
+      next_tet_idx = randomIdx();
+      next_tet = tetTypes[next_tet_idx];
+
       // スコアのリセット
       score = 0;
       document.getElementById("score").innerText = "Score: " + score;
@@ -424,6 +438,7 @@
       };
 
       draw();
+      drawPreview(next_tet_idx)
     };
   </script>
 </body>
