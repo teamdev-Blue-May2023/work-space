@@ -19,6 +19,12 @@
       font-size: 20px;
       border-radius: 15px;
       background-color: #b2d8d8;
+      margin-bottom:30px;
+    }
+    #speedButton{
+      font-size: 20px;
+      border-radius: 15px;
+      background-color: #b2d8d8;
     }
 
     #score {
@@ -34,6 +40,15 @@
       margin: auto;
       margin-bottom: 20px;
     }
+
+    #button-container {
+      display: flex;
+      flex-direction: column;
+      width:150px;
+      margin-left:380px;
+    }
+
+    
   </style>
 </head>
 
@@ -46,7 +61,10 @@
     <audio id="bgm" src="https://cdn.pixabay.com/download/audio/2023/04/08/audio_5fd3e66ac3.mp3" loop></audio>
     <audio id="effect" src="https://assets.mixkit.co/active_storage/sfx/212/212-preview.mp3"></audio>
   </div>
-  <button id="startButton">Start Game</button>
+  <div id="button-container">
+    <button id="startButton">Start Game</button>
+    <button id="speedButton">Stop Speed</button>  
+  </div>
   <script>
     let score = 0; // スコアの初期化
 
