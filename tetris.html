@@ -131,6 +131,7 @@
       'rgba(0, 255, 255, 1)',
       'rgba(30, 144, 255, 1)',
       'rgba(255, 140, 0, 1)',
+      'rgba(255, 105, 180, 1)',
     ];
 
     let tet_idx = 4;
@@ -334,6 +335,31 @@
       }
     };
 
+    const flashLine = (line) => {
+      // 一列全てを順番に（tetColorsの8番目）に変える
+      for (let nx = 0; nx < boardCol; nx++) {
+        // nx * 10ミリ秒ごとに色を変更
+        setTimeout(() => {
+          board[line][nx] = 8;
+          // 描画を更新
+          draw();
+        }, nx * 20);
+      }
+
+      // 一定時間後にライン消去
+      setTimeout(() => {
+        //その行から上に向かってfor文を動かす
+        for (let ny = line; ny > 0; ny--) {
+          for (let nx = 0; nx < boardCol; nx++) {
+            //一列上の情報をコピーする
+            board[ny][nx] = board[ny - 1][nx];
+          }
+        }
+        //再度描画を更新
+        draw();
+      }, boardCol * 20 + 30);  // 合計時間（全てのセルの色が変わるのに必要な時間 + 余裕時間）
+    };
+
     const clearLine = () => {
       //ボードの行を上から調査
       for (let y = 0; y < boardRow; y++) {
@@ -355,6 +381,7 @@
               board[ny][nx] = board[ny - 1][nx];
             }
           }
+          flashLine(y); // フラッシュエフェクトを実行
           //スコアを更新
           score += 10;
           document.getElementById("score").innerText = "Score: " + score;
