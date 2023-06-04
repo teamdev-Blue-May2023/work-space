@@ -24,7 +24,7 @@
     #speedButton{
       font-size: 20px;
       border-radius: 15px;
-      background-color: #b2d8d8;
+      background-color: blue;
     }
 
     #score {
@@ -69,7 +69,7 @@
     let score = 0; // スコアの初期化
 
     // 落下スピード
-    const speed = 500;
+    let speed = 500;
     //ブロック1マスの大きさ
     const blockSize = 30;
     //ボードサイズ
@@ -101,6 +101,8 @@
     const tetSize = 4;
     // ゲームオーバー状態を表す変数
     let isGameOver = false;
+    //Speed up stop
+    let speedStop = false;
 
 
     //テトリミノの追加
@@ -460,6 +462,16 @@
 
         score += 10;
         document.getElementById("score").innerText = "Score: " + score;
+        if(score === 100 && speedStop===false)speed=450;
+        else if(score === 150 &&speedStop===false) speed = 400;
+        else if(score === 200 && speedStop===false) speed = 350;
+        else if(score === 250 && speedStop===false) speed = 300;
+        else if(score === 300 && speedStop===false) speed = 250;
+        else if(score === 350 && speedStop===false) speed = 200;
+        else if(score === 400 && speedStop===false) speed = 150;
+        else if(score === 450 && speedStop===false) speed = 100;
+
+        console.log(speed);
 
         clearLine();
       }, boardCol * 20 + 30);  // 合計時間（全てのセルの色が変わるのに必要な時間 + 余裕時間）
@@ -573,6 +585,10 @@
       timerId = setInterval(dropTet, speed);
       draw();
       drawPreview(next_tet_idx)
+
+      //trueの時はspeed upさせない。
+      speedStop = false;      
+
     };
     //ゲーム開始の処理
     //Startボタンを押した時の処理
@@ -592,6 +608,22 @@
       init();
       console.log("Game has started!");
     });
+
+    //Speed up stop button
+    document.getElementById('speedButton').addEventListener('click', function() {
+      // Change the background color of the button
+      if(this.style.backgroundColor === 'blue'){
+        console.log(this.style.backgroundColor );
+        this.style.backgroundColor = 'red';
+      }
+      else{
+        this.style.backgroundColor = 'blue'
+      }
+
+      // Change the speedStop parameter to true
+      speedStop = !speedStop;
+      console.log(speedStop);
+  });
 
   </script>
 </body>
