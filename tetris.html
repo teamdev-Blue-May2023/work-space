@@ -259,6 +259,7 @@
         tet_idx = holdTet_idx;
         holdTet = tempTet;
         holdTet_idx = temp_idx;
+        initStartPos(); // 初期位置に戻す
       }
       drawHold(); // ホールドエリアの描画を更新
       isHolded = true; // ホールドを使用済みにする
