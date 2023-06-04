@@ -529,6 +529,8 @@
         if (checkGameOver()) {
           clearInterval(timerId);
           isGameOver = true; // ゲームオーバー状態にする
+          bgm.pause(); // BGM停止、最初に戻す
+          bgm.currentTime = 0;
         }
 
         //抽選
