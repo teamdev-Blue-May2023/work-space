@@ -406,10 +406,12 @@
       }
     };
 
+    let deleteList = [];
+
+    // クリアする1行に対する処理。色を変え、削除する。
     const flashLine = (line) => {
-      // 一列全てを順番に（tetColorsの8番目）に変える
       for (let nx = 0; nx < boardCol; nx++) {
-        // nx * 10ミリ秒ごとに色を変更
+        // nx * 20ミリ秒ごとに色を変更
         setTimeout(() => {
           board[line][nx] = 8;
           // 描画を更新
@@ -417,7 +419,7 @@
         }, nx * 20);
       }
 
-      // 一定時間後にライン消去
+      // ライン消去時のタイム設定
       setTimeout(() => {
         //その行から上に向かってfor文を動かす
         for (let ny = line; ny > 0; ny--) {
@@ -426,36 +428,43 @@
             board[ny][nx] = board[ny - 1][nx];
           }
         }
+        for (let nx = 0; nx < boardCol; nx++) { // 最上行を空行に
+          board[0][nx] = 0;
+        }
         //再度描画を更新
         draw();
+
+        score += 10;
+        document.getElementById("score").innerText = "Score: " + score;
+
+        clearLine();
       }, boardCol * 20 + 30);  // 合計時間（全てのセルの色が変わるのに必要な時間 + 余裕時間）
     };
 
+    // クリアする行のリスト作成。行リストに対するクリアの実行。
     const clearLine = () => {
-      //ボードの行を上から調査
-      for (let y = 0; y < boardRow; y++) {
-        //一列揃ってると仮定する(フラグ)
-        let isLineOK = true;
-        //列に0が入っていないか調査
-        for (let x = 0; x < boardCol; x++) {
-          if (board[y][x] === 0) {
-            //0が入ってたのでフラグをfalse
-            isLineOK = false;
-            break;
-          }
-        }
-        if (isLineOK) {//ここに来るということはその列が揃っていたことを意味する
-          //その行から上に向かってfor文を動かす
-          for (let ny = y; ny > 0; ny--) {
-            for (let nx = 0; nx < boardCol; nx++) {
-              //一列上の情報をコピーする
-              board[ny][nx] = board[ny - 1][nx];
+      if (deleteList.length > 0) {
+        let line = deleteList[0]; // 削除する1行を取り出す
+        deleteList.splice(0, 1);
+        flashLine(line);
+      } else {
+        for (let y = 0; y < boardRow; y++) {
+          let isLineOK = true;
+          for (let x = 0; x < boardCol; x++) {
+            if (board[y][x] === 0) {
+              isLineOK = false;
+              break;
             }
           }
-          flashLine(y); // フラッシュエフェクトを実行
-          //スコアを更新
-          score += 10;
-          document.getElementById("score").innerText = "Score: " + score;
+          if (isLineOK) {
+            deleteList.push(y);
+          }
+        }
+        // 1行クリアした後もなおクリアすべき行がある場合はもう一度
+        if (deleteList.length > 0) {
+          let line = deleteList[0];
+          deleteList.splice(0, 1);
+          flashLine(line);
         }
       }
     };
