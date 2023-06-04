@@ -19,9 +19,10 @@
       font-size: 20px;
       border-radius: 15px;
       background-color: #b2d8d8;
-      margin-bottom:30px;
+      margin-bottom: 30px;
     }
-    #speedButton{
+
+    #speedButton {
       font-size: 20px;
       border-radius: 15px;
       background-color: blue;
@@ -32,23 +33,29 @@
       font-size: 30px;
     }
 
+    #square {
+      margin-left:20px;
+      color: white;
+      background-color: black;
+    }
+
     #holdBox {
-      width: 120px;
+      width: 150px;
       height: 120px;
       color: white;
       background-color: rgb(105, 105, 105);
       margin: auto;
+      margin-top:200px;
+      margin-left:20px;
       margin-bottom: 20px;
     }
 
     #button-container {
       display: flex;
       flex-direction: column;
-      width:150px;
-      margin-left:380px;
+      width: 150px;
+      margin-left: 380px;
     }
-
-    
   </style>
 </head>
 
@@ -56,14 +63,17 @@
   <div id="score">Score: 0</div>
   <div id="container">
     <div> <canvas id="cvs"></canvas> </div>
-    <div><canvas id="squareBox"></canvas></div>
-    <div id="holdBox">Hold: <canvas id="holdCanvas"></canvas></div>
+    <div id="container2">
+      <div id="square">Next:<canvas id="squareBox"></canvas></div>>
+      <div id="holdBox">Hold: <canvas id="holdCanvas"></canvas></div>
+    </div>
+   
     <audio id="bgm" src="https://cdn.pixabay.com/download/audio/2023/04/08/audio_5fd3e66ac3.mp3" loop></audio>
     <audio id="effect" src="https://assets.mixkit.co/active_storage/sfx/212/212-preview.mp3"></audio>
   </div>
   <div id="button-container">
     <button id="startButton">Start Game</button>
-    <button id="speedButton">Stop Speed</button>  
+    <button id="speedButton">Stop Speed</button>
   </div>
   <script>
     let score = 0; // スコアの初期化
@@ -462,14 +472,14 @@
 
         score += 10;
         document.getElementById("score").innerText = "Score: " + score;
-        if(score === 100 && speedStop===false)speed=450;
-        else if(score === 150 &&speedStop===false) speed = 400;
-        else if(score === 200 && speedStop===false) speed = 350;
-        else if(score === 250 && speedStop===false) speed = 300;
-        else if(score === 300 && speedStop===false) speed = 250;
-        else if(score === 350 && speedStop===false) speed = 200;
-        else if(score === 400 && speedStop===false) speed = 150;
-        else if(score === 450 && speedStop===false) speed = 100;
+        if (score === 100 && speedStop === false) speed = 450;
+        else if (score === 150 && speedStop === false) speed = 400;
+        else if (score === 200 && speedStop === false) speed = 350;
+        else if (score === 250 && speedStop === false) speed = 300;
+        else if (score === 300 && speedStop === false) speed = 250;
+        else if (score === 350 && speedStop === false) speed = 200;
+        else if (score === 400 && speedStop === false) speed = 150;
+        else if (score === 450 && speedStop === false) speed = 100;
 
         console.log(speed);
 
@@ -587,7 +597,7 @@
       drawPreview(next_tet_idx)
 
       //trueの時はspeed upさせない。
-      speedStop = false;      
+      speedStop = false;
 
     };
     //ゲーム開始の処理
@@ -598,7 +608,7 @@
         timerId = null;
       }
       isGameOver = false;
-      
+
       // ホールドデータの初期化
       holdTet = null;
       holdTet_idx = null;
@@ -610,20 +620,20 @@
     });
 
     //Speed up stop button
-    document.getElementById('speedButton').addEventListener('click', function() {
+    document.getElementById('speedButton').addEventListener('click', function () {
       // Change the background color of the button
-      if(this.style.backgroundColor === 'blue'){
-        console.log(this.style.backgroundColor );
+      if (this.style.backgroundColor === 'blue') {
+        console.log(this.style.backgroundColor);
         this.style.backgroundColor = 'red';
       }
-      else{
+      else {
         this.style.backgroundColor = 'blue'
       }
 
       // Change the speedStop parameter to true
       speedStop = !speedStop;
       console.log(speedStop);
-  });
+    });
 
   </script>
 </body>
