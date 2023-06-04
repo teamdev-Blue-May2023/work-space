@@ -47,9 +47,9 @@
 
     #holdBox {
       width: 150px;
-      height: 120px;
+      height: 150px;
       color: white;
-      background-color: rgb(105, 105, 105);
+      background-color: black;
       margin: auto;
       margin-top:20px;
       margin-left:20px;
@@ -70,9 +70,9 @@
   <div id="container">
     <div> <canvas id="cvs"></canvas> </div>
     <div id="container2">
-      <div id="square">Next:<canvas id="squareBox"></canvas></div>>
+      <div id="square"><strong>Next</strong><canvas id="squareBox"></canvas></div>>
       <div id="disc"><canvas id="description"></canvas></div>
-      <div id="holdBox">Hold: <canvas id="holdCanvas"></canvas></div>
+      <div id="holdBox"><strong>Hold</strong><canvas id="holdCanvas"></canvas></div>
     </div>
    
     <audio id="bgm" src="https://cdn.pixabay.com/download/audio/2023/04/08/audio_5fd3e66ac3.mp3" loop></audio>
@@ -146,8 +146,8 @@
       [], //配列のインデックス0は空としておく。
       [
         [0, 0, 0, 0],
-        [0, 0, 1, 1],
-        [0, 0, 1, 1],
+        [0, 1, 1, 0],
+        [0, 1, 1, 0],
         [0, 0, 0, 0],
       ],
       [
@@ -560,6 +560,10 @@
           bgm.currentTime = 0;
           const alarm = document.getElementById('alarm'); // 終了時にアラームを鳴らす
           alarm.play();
+          setTimeout(function () {
+            alarm.pause();
+            alarm.currentTime = 0;
+          }, 1500); // 1.5秒後に停止
         }
 
         //抽選
