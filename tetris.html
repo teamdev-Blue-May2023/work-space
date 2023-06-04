@@ -44,6 +44,7 @@
     <div><canvas id="squareBox"></canvas></div>
     <div id="holdBox">Hold: <canvas id="holdCanvas"></canvas></div>
     <audio id="bgm" src="https://cdn.pixabay.com/download/audio/2023/04/08/audio_5fd3e66ac3.mp3" loop></audio>
+    <audio id="effect" src="https://assets.mixkit.co/active_storage/sfx/212/212-preview.mp3"></audio>
   </div>
   <button id="startButton">Start Game</button>
   <script>
@@ -406,11 +407,16 @@
       }
     };
 
-    let deleteList = [];
+    const playEffect = () => {
+      var effect = document.getElementById("effect");
+      effect.play();
+    }
 
+    let deleteList = [];
     // クリアする1行に対する処理。色を変え、削除する。
     const flashLine = (line) => {
       for (let nx = 0; nx < boardCol; nx++) {
+        playEffect();
         // nx * 20ミリ秒ごとに色を変更
         setTimeout(() => {
           board[line][nx] = 8;
