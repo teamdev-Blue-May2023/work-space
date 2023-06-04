@@ -39,13 +39,19 @@
       background-color: black;
     }
 
+    #disc {
+      width: 150px;
+      height: 300px;
+      margin-left:20px;
+    }
+
     #holdBox {
       width: 150px;
       height: 120px;
       color: white;
       background-color: rgb(105, 105, 105);
       margin: auto;
-      margin-top:200px;
+      margin-top:20px;
       margin-left:20px;
       margin-bottom: 20px;
     }
@@ -65,6 +71,7 @@
     <div> <canvas id="cvs"></canvas> </div>
     <div id="container2">
       <div id="square">Next:<canvas id="squareBox"></canvas></div>>
+      <div id="disc"><canvas id="description"></canvas></div>
       <div id="holdBox">Hold: <canvas id="holdCanvas"></canvas></div>
     </div>
    
@@ -79,7 +86,7 @@
     let score = 0; // スコアの初期化
 
     // 落下スピード
-    let speed = 500;
+    const speed = 500;
     //ブロック1マスの大きさ
     const blockSize = 30;
     //ボードサイズ
@@ -114,6 +121,19 @@
     //Speed up stop
     let speedStop = false;
 
+    const desx = document.getElementById('description');
+    const desc = desx.getContext('2d');
+    desx.width = 250
+    desx.height = 210
+    const drawDisc = () => {
+      desc.font = '20pt Arial';
+      desc.fillStyle = 'white';
+      desc.fillText('⬆️：回転', 10, 50);
+      desc.fillText('⬅️➡️：左右移動', 10, 90);
+      desc.fillText('⬇️：下移動', 10, 130);
+      desc.fillText('スペース：即着地', 10, 170);
+      desc.fillText('H：ホールド', 10, 210);
+    }
 
     //テトリミノの追加
     const tetTypes = [
@@ -443,6 +463,7 @@
     }
 
     let deleteList = [];
+
     // クリアする1行に対する処理。色を変え、削除する。
     const flashLine = (line) => {
       for (let nx = 0; nx < boardCol; nx++) {
@@ -598,6 +619,8 @@
       draw();
       drawPreview(next_tet_idx)
 
+      drawDisc();
+
       //trueの時はspeed upさせない。
       speedStop = false;
 
@@ -610,7 +633,7 @@
         timerId = null;
       }
       isGameOver = false;
-
+      
       // ホールドデータの初期化
       holdTet = null;
       holdTet_idx = null;
